@@ -1,0 +1,526 @@
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO GEAR | Менеджер спорядження</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #0b1020;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding: 30px;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4d8dff;
+}
+
+.subtitle {
+    color: #94a3b8;
+    margin-top: 5px;
+}
+
+.status {
+    background: #12352f;
+    color: #36d399;
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 20px;
+}
+
+.sidebar, .panel {
+    background: #141d33;
+    border: 1px solid #293956;
+    border-radius: 16px;
+    padding: 18px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 8px;
+    background: transparent;
+    color: #aab8d0;
+    border: none;
+    border-radius: 9px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+    background: #263b60;
+    color: white;
+}
+
+.panel {
+    margin-bottom: 18px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+.kits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.kit {
+    background: #1a2742;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.kit h3 {
+    margin-bottom: 15px;
+}
+
+.item {
+    display: inline-block;
+    background: #304363;
+    padding: 8px 11px;
+    margin: 4px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.result {
+    background: #101a2c;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid #293956;
+}
+
+.result h3 {
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.result p {
+    color: #b8c7df;
+    overflow-wrap: anywhere;
+}
+
+input, select {
+    background: #0b1020;
+    border: 1px solid #354967;
+    padding: 12px;
+    color: white;
+    border-radius: 8px;
+    margin: 5px;
+}
+
+button.action {
+    background: #397cff;
+    color: white;
+    border: none;
+    padding: 12px 17px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button.action:hover {
+    background: #2865d8;
+}
+
+button.delete {
+    background: #a8324c;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    background: #1a2742;
+    padding: 17px;
+    border-radius: 12px;
+}
+
+.stat small {
+    display: block;
+    color: #94a3b8;
+    margin-bottom: 10px;
+}
+
+.stat strong {
+    font-size: 24px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.notice {
+    margin-top: 12px;
+    color: #36d399;
+}
+
+footer {
+    text-align: center;
+    color: #64748b;
+    margin-top: 35px;
+}
+
+@media(max-width: 750px) {
+    body { padding: 15px; }
+    .layout { grid-template-columns: 1fr; }
+    .kits, .grid { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+    <div>
+        <div class="logo">⚙ PRO GEAR</div>
+        <div class="subtitle">Менеджер спорядження</div>
+    </div>
+    <div class="status">● Система готова</div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+    <button class="active" onclick="showPage('home',this)">▦ Комплекти</button>
+    <button onclick="showPage('compare',this)">⇄ Порівняння</button>
+    <button onclick="showPage('check',this)">✓ Готовність</button>
+    <button onclick="showPage('manage',this)">＋ Керування</button>
+    <button onclick="showPage('stats',this)">▤ Статистика</button>
+</aside>
+
+<main>
+
+<section id="home" class="page active">
+    <div class="panel">
+        <h2>Мої комплекти</h2>
+        <div class="kits">
+            <div class="kit">
+                <h3>Комплект А</h3>
+                <div id="kitA"></div>
+            </div>
+            <div class="kit">
+                <h3>Комплект Б</h3>
+                <div id="kitB"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats" id="quickStats"></div>
+</section>
+
+<section id="compare" class="page">
+    <div class="panel">
+        <h2>Порівняння комплектів</h2>
+        <div class="grid">
+            <div class="result">
+                <h3>Спільні предмети</h3>
+                <p id="common"></p>
+            </div>
+            <div class="result">
+                <h3>Усі предмети</h3>
+                <p id="all"></p>
+            </div>
+            <div class="result">
+                <h3>Тільки комплект А</h3>
+                <p id="onlyA"></p>
+            </div>
+            <div class="result">
+                <h3>Тільки комплект Б</h3>
+                <p id="onlyB"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="check" class="page">
+    <div class="panel">
+        <h2>Перевірка готовності</h2>
+        <div class="grid">
+            <div class="result">
+                <h3>Комплект А</h3>
+                <p id="checkA"></p>
+            </div>
+            <div class="result">
+                <h3>Комплект Б</h3>
+                <p id="checkB"></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="manage" class="page">
+    <div class="panel">
+        <h2>Додати предмет</h2>
+        <select id="addTarget">
+            <option value="A">Комплект А</option>
+            <option value="B">Комплект Б</option>
+        </select>
+        <input id="newItem" placeholder="Назва предмета">
+        <button class="action" onclick="addItem()">Додати</button>
+
+        <h2 style="margin-top:30px">Видалити предмет</h2>
+        <select id="removeTarget">
+            <option value="A">Комплект А</option>
+            <option value="B">Комплект Б</option>
+        </select>
+        <select id="removeItem"></select>
+        <button class="action delete" onclick="removeItem()">Видалити</button>
+
+        <div class="notice" id="message"></div>
+    </div>
+</section>
+
+<section id="stats" class="page">
+    <div class="panel">
+        <h2>Статистика</h2>
+        <div class="stats" id="statistics"></div>
+        <div class="result" style="margin-top:15px">
+            <h3>Висновок</h3>
+            <p id="summary"></p>
+        </div>
+    </div>
+</section>
+
+</main>
+</div>
+
+<footer>PRO GEAR © 2026 | Навчальний Python-проєкт</footer>
+</div>
+
+<script>
+// Початкові комплекти
+let kitA = new Set([
+    "Рюкзак", "Ліхтарик", "Вода", "Карта",
+    "Аптечка", "Ніж", "Компас", "Павербанк"
+]);
+
+let kitB = new Set([
+    "Рюкзак", "Вода", "Намет", "Спальник",
+    "Аптечка", "Компас", "Їжа", "Павербанк"
+]);
+
+let required = new Set([
+    "Рюкзак", "Вода", "Аптечка",
+    "Ліхтарик", "Компас"
+]);
+
+// Операції множин
+function intersection(a,b) {
+    return new Set([...a].filter(x => b.has(x)));
+}
+
+function difference(a,b) {
+    return new Set([...a].filter(x => !b.has(x)));
+}
+
+function union(a,b) {
+    return new Set([...a,...b]);
+}
+
+function sorted(set) {
+    return [...set].sort((a,b) => a.localeCompare(b,"uk"));
+}
+
+// Перемикання сторінок
+function showPage(id,button) {
+    document.querySelectorAll(".page").forEach(p => {
+        p.classList.remove("active");
+    });
+
+    document.querySelectorAll(".sidebar button").forEach(b => {
+        b.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+    button.classList.add("active");
+}
+
+// Показ комплекту
+function showKit(id,kit) {
+    document.getElementById(id).innerHTML =
+        sorted(kit).map(item =>
+            `<span class="item">${escapeHTML(item)}</span>`
+        ).join("") || "Комплект порожній";
+}
+
+// Захист тексту, введеного користувачем
+function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, c => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;",
+        '"':"&quot;", "'":"&#39;"
+    })[c]);
+}
+
+// Порівняння
+function compare() {
+    let common = intersection(kitA,kitB);
+    let all = union(kitA,kitB);
+    let onlyA = difference(kitA,kitB);
+    let onlyB = difference(kitB,kitA);
+
+    document.getElementById("common").textContent = sorted(common).join(", ") || "Немає";
+    document.getElementById("all").textContent = sorted(all).join(", ") || "Немає";
+    document.getElementById("onlyA").textContent = sorted(onlyA).join(", ") || "Немає";
+    document.getElementById("onlyB").textContent = sorted(onlyB).join(", ") || "Немає";
+}
+
+// Перевірка готовності
+function checkKit(kit) {
+    let missing = difference(required,kit);
+    let ready = required.size - missing.size;
+
+    if(missing.size === 0) {
+        return "Комплект повністю готовий! 100%";
+    }
+
+    return "Готовність: " + Math.round(ready / required.size * 100) +
+        "% | Не вистачає: " + sorted(missing).join(", ");
+}
+
+// Додавання
+function addItem() {
+    let name = document.getElementById("newItem").value.trim();
+    let target = document.getElementById("addTarget").value;
+    let kit = target === "A" ? kitA : kitB;
+
+    if(!name) {
+        message("Введіть назву предмета!");
+        return;
+    }
+
+    if(kit.has(name)) {
+        message("Такий предмет уже існує!");
+        return;
+    }
+
+    kit.add(name);
+    document.getElementById("newItem").value = "";
+    message("Предмет успішно додано!");
+    render();
+}
+
+// Видалення
+function removeItem() {
+    let target = document.getElementById("removeTarget").value;
+    let kit = target === "A" ? kitA : kitB;
+    let item = document.getElementById("removeItem").value;
+
+    if(!item || !kit.has(item)) {
+        message("Оберіть предмет!");
+        return;
+    }
+
+    kit.delete(item);
+    message("Предмет видалено!");
+    render();
+}
+
+function message(text) {
+    document.getElementById("message").textContent = text;
+}
+
+// Оновлення списку видалення
+function updateRemoveOptions() {
+    let target = document.getElementById("removeTarget").value;
+    let kit = target === "A" ? kitA : kitB;
+
+    document.getElementById("removeItem").innerHTML =
+        sorted(kit).map(item =>
+            `<option value="${escapeHTML(item)}">${escapeHTML(item)}</option>`
+        ).join("");
+}
+
+// Статистика
+function updateStats() {
+    let all = union(kitA,kitB);
+    let common = intersection(kitA,kitB);
+
+    document.getElementById("quickStats").innerHTML = `
+        <div class="stat"><small>Комплект А</small><strong>${kitA.size}</strong></div>
+        <div class="stat"><small>Комплект Б</small><strong>${kitB.size}</strong></div>
+        <div class="stat"><small>Спільні</small><strong>${common.size}</strong></div>
+        <div class="stat"><small>Унікальні</small><strong>${all.size}</strong></div>
+    `;
+
+    document.getElementById("statistics").innerHTML = `
+        <div class="stat"><small>Предметів А</small><strong>${kitA.size}</strong></div>
+        <div class="stat"><small>Предметів Б</small><strong>${kitB.size}</strong></div>
+        <div class="stat"><small>Спільних</small><strong>${common.size}</strong></div>
+        <div class="stat"><small>Унікальних</small><strong>${all.size}</strong></div>
+    `;
+
+    let text = kitA.size > kitB.size
+        ? "Комплект А містить більше предметів."
+        : kitB.size > kitA.size
+        ? "Комплект Б містить більше предметів."
+        : "Обидва комплекти мають однакову кількість предметів.";
+
+    document.getElementById("summary").textContent = text;
+}
+
+// Оновлення всього сайту
+function render() {
+    showKit("kitA",kitA);
+    showKit("kitB",kitB);
+
+    compare();
+
+    document.getElementById("checkA").textContent = checkKit(kitA);
+    document.getElementById("checkB").textContent = checkKit(kitB);
+
+    updateStats();
+    updateRemoveOptions();
+}
+
+document.getElementById("removeTarget").addEventListener("change",updateRemoveOptions);
+
+render();
+</script>
+</body>
+</html>
